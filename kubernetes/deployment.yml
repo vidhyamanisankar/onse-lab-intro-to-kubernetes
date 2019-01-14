@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: kubernetes-intro
+spec:
+  selector:
+    matchLabels:
+      app: kubernetes-intro
+      tier: frontend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: kubernetes-intro
+        tier: frontend
+    spec:
+      containers:
+      - name: kubernetes-intro-web
+        image: DOCKER_USER/onse-lab-intro-to-kubernetes:0.0.1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 5000
+        env:
+        - name: RECIPIENT
+          value: "world"
