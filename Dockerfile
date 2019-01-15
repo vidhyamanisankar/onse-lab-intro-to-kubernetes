@@ -16,8 +16,6 @@ ENV LANG=en_GB.UTF-8
 ENV LANGUAGE=en_GB.UTF-8
 ENV LC_ALL=en_GB.UTF-8
 
-ENV PATH="${PATH}:/root/.local/bin"
-
 RUN pip install --upgrade pip
 RUN pip install --user pipenv
 
