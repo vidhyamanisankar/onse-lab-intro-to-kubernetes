@@ -27,6 +27,6 @@ WORKDIR $APP_ROOT
 
 COPY . $APP_ROOT
 
-RUN pipenv install
+RUN pipenv install --system
 
 CMD pipenv run scripts/docker-start.sh
