@@ -17,7 +17,7 @@ ENV LANGUAGE=en_GB.UTF-8
 ENV LC_ALL=en_GB.UTF-8
 
 RUN pip install --upgrade pip
-RUN pip install --user pipenv
+RUN pip install pipenv
 
 RUN mkdir $APP_ROOT
 
