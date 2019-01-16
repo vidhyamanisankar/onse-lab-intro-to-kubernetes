@@ -20,7 +20,6 @@ RUN pip install --upgrade pip
 RUN pip install --user pipenv
 
 RUN mkdir $APP_ROOT
-RUN mkdir /root/.local
 
 WORKDIR $APP_ROOT
 
