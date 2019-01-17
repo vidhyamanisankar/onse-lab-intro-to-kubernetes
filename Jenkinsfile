@@ -17,6 +17,12 @@ spec:
     volumeMounts:
       - name: jenkins-docker-cfg
         mountPath: /root/.docker
+
+  - name: kubectl
+    image: aklearning/onse-eks-kubectl-deployer
+    imagePullPolicy: Always
+    tty: true
+
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -44,6 +50,16 @@ spec:
                 /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${image_name}
                 """
             }
+        }
+    }
+
+    stage('kube') {
+        container(name: 'kubectl', shell: '/bin/sh') {
+            environment {
+                AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+            }
+            sh 'kubectl config get-contexts'
         }
     }
   }
