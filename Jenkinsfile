@@ -1,4 +1,6 @@
 def label = "kaniko-${UUID.randomUUID().toString()}"
+def image_name = "aklearning/onse-lab-intro-to-kubernetes"
+def GIT_COMMIT = ''
 
 podTemplate(name: 'kaniko', label: label, yaml: """
 kind: Pod
@@ -28,15 +30,21 @@ spec:
   ) {
 
   node(label) {
+    git 'https://github.com/ONSdigital/onse-lab-intro-to-kubernetes'
     stage('Build with Kaniko') {
-      git 'https://github.com/ONSdigital/onse-lab-intro-to-kubernetes'
-      container(name: 'kaniko', shell: '/busybox/sh') {
-        withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
-          sh '''#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=aklearning/kaniko-test
-          '''
+        GIT_COMMIT = sh (
+            script: 'git rev-parse HEAD',
+            returnStdout: true
+        ).trim()
+        image_name += ":${GIT_COMMIT}"
+        echo "Building image ${image_name}"
+        container(name: 'kaniko', shell: '/busybox/sh') {
+            withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
+                sh """#!/busybox/sh
+                /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${image_name}
+                """
+            }
         }
-      }
     }
   }
 }
