@@ -20,7 +20,7 @@ spec:
         mountPath: /root/.docker
 
   - name: kubectl
-    image: aklearning/onse-eks-kubectl-deployer:0.0.1
+    image: DOCKERHUB_USER/onse-eks-kubectl-deployer:0.0.1
     imagePullPolicy: Always
     tty: true
 
@@ -41,7 +41,7 @@ spec:
   ) {
 
   node(label) {
-    git 'https://github.com/code-engine/onse-lab-intro-to-kubernetes'
+    git 'https://github.com/GITHUB_USER/onse-lab-intro-to-kubernetes'
 
     stage('Test') {
         container(name: 'python-test', shell: '/bin/sh') {
