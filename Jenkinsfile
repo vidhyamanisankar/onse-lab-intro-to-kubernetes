@@ -24,6 +24,10 @@ spec:
     imagePullPolicy: Always
     tty: true
 
+  - name: python-test
+    image: python:alpine3.7
+    tty: true
+
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -38,6 +42,14 @@ spec:
 
   node(label) {
     git 'https://github.com/code-engine/onse-lab-intro-to-kubernetes'
+
+    stage('Test') {
+        container(name: 'python-test', shell: '/bin/sh') {
+            sh 'pip install pipenv'
+            sh 'pipenv install --dev'
+            sh 'pipenv run python -m pytest'
+        }
+    }
 
     stage('Build with Kaniko') {
       git_commit = sh (
