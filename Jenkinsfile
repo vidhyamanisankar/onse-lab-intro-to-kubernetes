@@ -1,4 +1,4 @@
-def label = "kaniko-${UUID.randomUUID().toString()}"
+def label = "build-${UUID.randomUUID().toString()}"
 def image_name = "aklearning/onse-lab-intro-to-kubernetes"
 def GIT_COMMIT = ''
 
