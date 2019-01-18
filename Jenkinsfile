@@ -19,7 +19,7 @@ spec:
         mountPath: /root/.docker
 
   - name: kubectl
-    image: aklearning/onse-eks-kubectl-deployer
+    image: aklearning/onse-eks-kubectl-deployer:0.0.1
     imagePullPolicy: Always
     tty: true
 
