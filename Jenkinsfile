@@ -55,12 +55,19 @@ spec:
     }
 
     stage('kube') {
-        container(name: 'kubectl', shell: '/bin/sh') {
-            environment {
-                AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-            }
-            sh 'kubectl config get-contexts'
+      withCredentials([
+        string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+        string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
+        string(credentialsId: 'KUBERNETES_SERVER', variable: 'KUBERNETES_SERVER'),
+        file(credentialsId: 'KUBERNETES_CA', variable: 'KUBERNETES_CA')
+      ]) {
+        container(name: 'kubectl', shell: '/bin/sh',) {
+          sh '''kubectl config \
+              set-cluster kubernetes \
+              --server=$KUBERNETES_SERVER \
+              --certificate-authority=$KUBERNETES_CA
+          '''
+          sh 'kubectl get pods'
         }
       }
     }
