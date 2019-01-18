@@ -1,6 +1,7 @@
 def label = "build-${UUID.randomUUID().toString()}"
 def image_name = "aklearning/onse-lab-intro-to-kubernetes"
 def git_commit = ''
+def namespace = 'aklearning'
 
 podTemplate(name: 'kaniko', label: label, yaml: """
 kind: Pod
@@ -36,7 +37,7 @@ spec:
   ) {
 
   node(label) {
-    git 'https://github.com/ONSdigital/onse-lab-intro-to-kubernetes'
+    git 'https://github.com/code-engine/onse-lab-intro-to-kubernetes'
 
     stage('Build with Kaniko') {
       git_commit = sh (
@@ -67,7 +68,9 @@ spec:
               --server=$KUBERNETES_SERVER \
               --certificate-authority=$KUBERNETES_CA
           '''
-          sh 'kubectl get pods'
+          sh "yq.v2 w -i kubernetes/deployment.yml 'spec.template.spec.containers[0].image' ${image_name}"
+          sh "kubectl create namespace ${namespace} || true"
+          sh "kubectl apply -n ${namespace} -f kubernetes/"
         }
       }
     }
