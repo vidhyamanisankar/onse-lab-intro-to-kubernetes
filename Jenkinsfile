@@ -1,16 +1,21 @@
 def label = "build-${UUID.randomUUID().toString()}"
 def image_name = "aklearning/onse-lab-intro-to-kubernetes"
-def git_commit = ''
 def namespace = 'aklearning'
+def git_repository = 'https://github.com/GITHUB_USER/onse-lab-intro-to-kubernetes'
+
+def kaniko_image = 'gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251'
+def kubectl_image = 'aklearning/onse-eks-kubectl-deployer:0.0.1'
+
+def git_commit = ''
 
 podTemplate(name: 'kaniko', label: label, yaml: """
 kind: Pod
 metadata:
-  name: kaniko
+  name: build-pod
 spec:
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251
+    image: ${kaniko_image}
     imagePullPolicy: Always
     command:
     - /busybox/cat
@@ -20,7 +25,7 @@ spec:
         mountPath: /root/.docker
 
   - name: kubectl
-    image: DOCKERHUB_USER/onse-eks-kubectl-deployer:0.0.1
+    image: ${kubectl_image}
     imagePullPolicy: Always
     tty: true
 
@@ -41,7 +46,7 @@ spec:
   ) {
 
   node(label) {
-    git 'https://github.com/GITHUB_USER/onse-lab-intro-to-kubernetes'
+    git git_repository
 
     stage('Test') {
         container(name: 'python-test', shell: '/bin/sh') {
