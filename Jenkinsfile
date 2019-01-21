@@ -5,10 +5,8 @@ def git_repository = 'https://github.com/GITHUB_USER/onse-lab-intro-to-kubernete
 
 def kaniko_image = 'gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251'
 def kubectl_image = 'aklearning/onse-eks-kubectl-deployer:0.0.1'
-
 def git_commit = ''
-
-podTemplate(name: 'kaniko', label: label, yaml: """
+def pod_yaml = """
 kind: Pod
 metadata:
   name: build-pod
@@ -43,8 +41,8 @@ spec:
             - key: dockerconfigjson
               path: config.json
 """
-  ) {
 
+podTemplate(name: 'kaniko', label: label, yaml: pod_yaml) {
   node(label) {
     git git_repository
 
