@@ -1,4 +1,5 @@
 .git
 .gitignore
+.pytest_cache
 README.md
 docker*
