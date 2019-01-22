@@ -55,8 +55,8 @@ spec:
 podTemplate(name: 'kaniko', label: label, yaml: pod_yaml) {
   node(label) {
     // PULL GIT REPOSITORY
-    git git_repository
 
+    git git_repository
 
     // TEST STAGE
 
