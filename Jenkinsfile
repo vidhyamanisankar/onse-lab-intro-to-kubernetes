@@ -1,12 +1,18 @@
-def label = "build-${UUID.randomUUID().toString()}"
-def image_name = "aklearning/onse-lab-intro-to-kubernetes"
-def namespace = 'aklearning'
-def git_repository = 'https://github.com/GITHUB_USER/onse-lab-intro-to-kubernetes'
+// VARIABLES
 
-def kaniko_image = 'gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251'
-def kubectl_image = 'aklearning/onse-eks-kubectl-deployer:0.0.1'
-def git_commit = ''
-def pod_yaml = """
+def pair_id     = 'YOUR_PAIR_ID'
+def github_user = 'YOUR_GITHUB_USERNAME'
+
+// vvv DO NOT EDIT THE VARIABLES BETWEEN THESE MARKERS vvv //
+
+def git_commit     = ''
+def git_repository = "https://github.com/${github_user}/onse-lab-intro-to-kubernetes"
+def image_name     = "onsetraining/${pair_id}-onse-lab-intro-to-kubernetes"
+def kaniko_image   = 'gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251'
+def kubectl_image  = 'aklearning/onse-eks-kubectl-deployer:0.0.1'
+def label          = "build-${UUID.randomUUID().toString()}"
+def namespace      = "${pair_id}"
+def pod_yaml       = """
 kind: Pod
 metadata:
   name: build-pod
@@ -42,19 +48,29 @@ spec:
               path: config.json
 """
 
+// ^^^ DO NOT EDIT THE VARIABLES BETWEEN THESE MARKERS ^^^ //
+
+// POD TEMPLATE AND BUILD STAGES
+
 podTemplate(name: 'kaniko', label: label, yaml: pod_yaml) {
   node(label) {
+    // PULL GIT REPOSITORY
     git git_repository
 
+
+    // TEST STAGE
+
     stage('Test') {
-        container(name: 'python-test', shell: '/bin/sh') {
-            sh 'pip install pipenv'
-            sh 'pipenv install --dev'
-            sh 'pipenv run python -m pytest'
-        }
+      container(name: 'python-test', shell: '/bin/sh') {
+        sh 'pip install pipenv'
+        sh 'pipenv install --dev'
+        sh 'pipenv run python -m pytest'
+      }
     }
 
-    stage('Build with Kaniko') {
+    // DOCKER IMAGE BUILD STAGE
+
+    stage('Build Docker image with Kaniko') {
       git_commit = sh (
         script: 'git rev-parse HEAD',
         returnStdout: true
@@ -70,7 +86,9 @@ podTemplate(name: 'kaniko', label: label, yaml: pod_yaml) {
       }
     }
 
-    stage('kube') {
+    // DEPLOY CODE TO KUBERNETES STAGE
+
+    stage('Deploy to Kubernetes') {
       withCredentials([
         string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
         string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
