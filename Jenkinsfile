@@ -1,17 +1,16 @@
 // VARIABLES
 
-def pair_id   = 'PAIR_ID'
 def github_id = 'GITHUB_ID'
 
 // vvv DO NOT EDIT THE VARIABLES BETWEEN THESE MARKERS vvv //
 
 def git_commit     = ''
 def git_repository = "https://github.com/${github_id}/onse-lab-intro-to-kubernetes"
-def image_name     = "onsetraining/${pair_id}-onse-lab-intro-to-kubernetes"
+def image_name     = "onseshared/${github_id}-onse-lab-intro-to-kubernetes"
 def kaniko_image   = 'gcr.io/kaniko-project/executor:debug-539ddefcae3fd6b411a95982a830d987f4214251'
 def kubectl_image  = 'aklearning/onse-eks-kubectl-deployer:0.0.1'
 def label          = "build-${UUID.randomUUID().toString()}"
-def namespace      = "${pair_id}"
+def namespace      = "${github_id}"
 def pod_yaml       = """
 kind: Pod
 metadata:
