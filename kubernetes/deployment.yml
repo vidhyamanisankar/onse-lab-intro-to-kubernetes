@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-intro-web
-        image: vidhyamanisankar/onse-lab-intro-to-kubernetes:0.0.1
+        image: vidhyamanisankar/onse-lab-intro-to-kubernetes:0.0.2
         imagePullPolicy: Always
         resources:
           requests:

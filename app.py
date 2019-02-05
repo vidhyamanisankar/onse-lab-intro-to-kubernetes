@@ -6,7 +6,7 @@ app = Flask(__name__, instance_relative_config=True)
 
 @app.route('/')
 def hello_world():
-    recipient = os.getenv("RECIPIENT", "world")
+    recipient = os.getenv("RECEIVER", "unknown")
 
     return jsonify({"message": "Goodbye", "recipient": recipient})
 
