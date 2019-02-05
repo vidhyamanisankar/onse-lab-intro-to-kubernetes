@@ -8,7 +8,7 @@ app = Flask(__name__, instance_relative_config=True)
 def hello_world():
     recipient = os.getenv("RECIPIENT", "world")
 
-    return jsonify({"message": "Hello", "recipient": recipient})
+    return jsonify({"message": "Goodbye", "recipient": recipient})
 
 if __name__ == "__main__":
     app.run()
